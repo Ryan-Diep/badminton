@@ -44,7 +44,7 @@ class ChromeTest {
 
     @Test
     void test() {
-        String sutUrl = "https://reservation.frontdesksuite.ca/rcfs/richcraftkanata/Home/Index?Culture=en&PageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&ShouldStartReserveTimeFlow=False&ButtonId=00000000-0000-0000-0000-000000000000";
+        String sutUrl = "https://reservation.frontdesksuite.ca/rcfs/nepeansportsplex/Home/Index?Culture=en&PageId=b0d362a1-ba36-42ae-b1e0-feefaf43fe4c&ShouldStartReserveTimeFlow=False&ButtonId=00000000-0000-0000-0000-000000000000";
         driver.get(sutUrl);
         
         while(flag) {
@@ -63,7 +63,6 @@ class ChromeTest {
 					DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEEE MMMM d, yyyy");
                     String slot = futureDate.format(slotFormat);
 					String bookingDate = futureDate.format(dateFormat);
-                    
                     switch (day) {
 	                    case "Mon" :
 	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&amp;buttonId=af0013cb-31b9-4189-89f1-3c203c1b46f8&amp;culture=en&amp;uiCulture=en']")).click();
@@ -106,13 +105,13 @@ class ChromeTest {
 	                        break;
                     
 	                    case "Wed":
-	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=910a4518-3e8b-417b-834a-da13e5075db1&culture=en&uiCulture=en']")).click();
+	                    	driver.findElement(By.xpath("//a[@href='/rcfs/nepeansportsplex/ReserveTime/StartReservation?pageId=b0d362a1-ba36-42ae-b1e0-feefaf43fe4c&amp;buttonId=9ce6512e-016d-4bef-8a73-461225acfb08&amp;culture=en&amp;uiCulture=en']")).click();
 	                    	driver.findElement(By.name("ReservationCount")).click();
 	                    	driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
 							driver.findElement(By.className("mdc-button__ripple")).click();
 							driver.findElement(By.className("date-text")).click();
 	                    	driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
-	                    	label = "9:30 AM " + slot;
+	                    	label = "7:00 PM " + slot;
 	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";        
 	                    	driver.findElement(By.xpath(path)).click();
 	                    	driver.findElement(By.name("PhoneNumber")).click();
