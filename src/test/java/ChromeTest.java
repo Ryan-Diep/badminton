@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.slf4j.Logger;
 
@@ -55,11 +54,10 @@ class ChromeTest {
         	String parts[] = time.split(":");
         	
         	try {
-        		if(true) {
-//        		if(parts[0].equals("18") && parts[1].equals("00") && parts[2].equals("01")) {
+       		if(parts[0].equals("18") && parts[1].equals("00") && parts[2].equals("01")) {
             		LocalDate currentDate = LocalDate.now();
             		DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("EEE");
-                    String day = currentDate.format(dayFormat);                    
+                    String day = currentDate.format(dayFormat).replace(".", "");               
                     LocalDate futureDate = currentDate.plus(2, ChronoUnit.DAYS);
                     DateTimeFormatter slotFormat = DateTimeFormatter.ofPattern("EEEE MMMM dd, yyyy");
 					DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEEE MMMM d, yyyy");
@@ -93,6 +91,7 @@ class ChromeTest {
 							driver.findElement(By.className("mdc-button__ripple")).click();
 							driver.findElement(By.className("date-text")).click();
 	                    	driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
+							Thread.sleep(10000);
 							label = "7:00 PM " + bookingDate;
 	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";        
 	                    	driver.findElement(By.xpath(path)).click();
