@@ -62,19 +62,19 @@ class ChromeTest {
                     String day = currentDate.format(dayFormat);                    
                     LocalDate futureDate = currentDate.plus(2, ChronoUnit.DAYS);
                     DateTimeFormatter slotFormat = DateTimeFormatter.ofPattern("EEEE MMMM dd, yyyy");
+					DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEEE MMMM d, yyyy");
                     String slot = futureDate.format(slotFormat);
-                    day = "Mon";
+					String bookingDate = futureDate.format(dateFormat);
                     
                     switch (day) {
 	                    case "Mon" :
-	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=112a4f96-6fbb-4a9d-a00f-e2b3f35f9d5d&culture=en&uiCulture=en']")).click();
+	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&amp;buttonId=af0013cb-31b9-4189-89f1-3c203c1b46f8&amp;culture=en&amp;uiCulture=en']")).click();
 	                    	driver.findElement(By.name("ReservationCount")).click();
 	                    	driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
 	                    	driver.findElement(By.className("mdc-button__ripple")).click();
-	                    	driver.findElement(By.className("date-text")).click();
-	                    	label = "8:30 AM " + slot;
-	                    	label = "8:30 AM Thursday February 22, 2024";
-	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";                        	
+							driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
+							label = "8:30 AM " + bookingDate;
+	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";        
 	                    	driver.findElement(By.xpath(path)).click();
 	                    	driver.findElement(By.name("PhoneNumber")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).sendKeys("6138081681");
@@ -83,19 +83,19 @@ class ChromeTest {
 	                    	driver.findElement(By.name("field2021")).click();
 	                    	driver.findElement(By.name("field2021")).sendKeys("Ryan");
 	                    	driver.findElement(By.className("mdc-button__ripple")).click();
-	                    	Thread.sleep(500000);
-
+	                    	Thread.sleep(1000000);
 	                    	break;
 		                    
 	                    case "Tue" :
 	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=af0013cb-31b9-4189-89f1-3c203c1b46f8&culture=en&uiCulture=en']")).click();
-	                    	driver.findElement(By.className("date-text")).click();
-	                    	label = "7:00 PM " + slot;
-	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";
-	                    	driver.findElement(By.xpath(path)).click();
-	                        driver.findElement(By.name("ReservationCount")).click();
+	                    	driver.findElement(By.name("ReservationCount")).click();
 	                    	driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
-	                    	driver.findElement(By.className("mdc-button__ripple")).click();
+							driver.findElement(By.className("mdc-button__ripple")).click();
+							driver.findElement(By.className("date-text")).click();
+	                    	driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
+							label = "7:00 PM " + bookingDate;
+	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";        
+	                    	driver.findElement(By.xpath(path)).click();
 	                    	driver.findElement(By.name("PhoneNumber")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).sendKeys("6138081681");
 	                    	driver.findElement(By.name("Email")).click();
@@ -108,13 +108,14 @@ class ChromeTest {
                     
 	                    case "Wed":
 	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=910a4518-3e8b-417b-834a-da13e5075db1&culture=en&uiCulture=en']")).click();
-	                    	driver.findElement(By.className("header-text")).click();
-	                    	label = "9:30 AM " + slot;
-	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";                        	
-	                        driver.findElement(By.xpath(path)).click();
-	                        driver.findElement(By.name("ReservationCount")).click();
+	                    	driver.findElement(By.name("ReservationCount")).click();
 	                    	driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
-	                    	driver.findElement(By.className("mdc-button__ripple")).click();
+							driver.findElement(By.className("mdc-button__ripple")).click();
+							driver.findElement(By.className("date-text")).click();
+	                    	driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
+	                    	label = "9:30 AM " + slot;
+	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";        
+	                    	driver.findElement(By.xpath(path)).click();
 	                    	driver.findElement(By.name("PhoneNumber")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).sendKeys("6138081681");
 	                    	driver.findElement(By.name("Email")).click();
@@ -126,14 +127,15 @@ class ChromeTest {
 	                    	break;
 	                    	
 	                    case "Thu":
-	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=910a4518-3e8b-417b-834a-da13e5075db1&culture=en&uiCulture=en']")).click();
-	                    	driver.findElement(By.className("header-text")).click();
+							driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=910a4518-3e8b-417b-834a-da13e5075db1&culture=en&uiCulture=en']")).click();
+							driver.findElement(By.name("ReservationCount")).click();
+							driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
+							driver.findElement(By.className("mdc-button__ripple")).click();
+							driver.findElement(By.className("date-text")).click();
+							driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
 	                    	label = "9:30 AM " + slot;
-	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";                        	
+	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";        
 	                    	driver.findElement(By.xpath(path)).click();
-	                        driver.findElement(By.name("ReservationCount")).click();
-	                    	driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
-	                    	driver.findElement(By.className("mdc-button__ripple")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).sendKeys("6138081681");
 	                    	driver.findElement(By.name("Email")).click();
@@ -145,14 +147,15 @@ class ChromeTest {
 	                        break;
 	                    
 	                    case "Fri":
-	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=50624781-905f-4398-a569-ea60e3f21a2a&culture=en&uiCulture=en']")).click();
-	                    	driver.findElement(By.className("header-text")).click();
+							driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=910a4518-3e8b-417b-834a-da13e5075db1&culture=en&uiCulture=en']")).click();
+							driver.findElement(By.name("ReservationCount")).click();
+							driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
+							driver.findElement(By.className("mdc-button__ripple")).click();
+							driver.findElement(By.className("date-text")).click();
+							driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
 	                    	label = "10:30 AM " + slot;
-	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";     
+	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";        
 	                    	driver.findElement(By.xpath(path)).click();
-	                        driver.findElement(By.name("ReservationCount")).click();
-	                    	driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
-	                    	driver.findElement(By.className("mdc-button__ripple")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).sendKeys("6138081681");
 	                    	driver.findElement(By.name("Email")).click();
@@ -164,14 +167,15 @@ class ChromeTest {
 	                        break;
 	                        
 	                    case "Sat":
-	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=910a4518-3e8b-417b-834a-da13e5075db1&culture=en&uiCulture=en']")).click();
-	                    	driver.findElement(By.className("header-text")).click();
+							driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=910a4518-3e8b-417b-834a-da13e5075db1&culture=en&uiCulture=en']")).click();
+							driver.findElement(By.name("ReservationCount")).click();
+							driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
+							driver.findElement(By.className("mdc-button__ripple")).click();
+							driver.findElement(By.className("date-text")).click();
+							driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
 	                    	label = "9:30 AM " + slot;
 	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";                        	
 	                    	driver.findElement(By.xpath(path)).click();
-	                        driver.findElement(By.name("ReservationCount")).click();
-	                    	driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
-	                    	driver.findElement(By.className("mdc-button__ripple")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).sendKeys("6138081681");
 	                    	driver.findElement(By.name("Email")).click();
@@ -183,14 +187,15 @@ class ChromeTest {
 	                    	break;
 	                    	
 	                    case "Sun":
-	                    	driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=50624781-905f-4398-a569-ea60e3f21a2a&culture=en&uiCulture=en']")).click();
-	                    	driver.findElement(By.className("header-text")).click();
+							driver.findElement(By.xpath("//a[@href='/rcfs/richcraftkanata/ReserveTime/StartReservation?pageId=b3b9b36f-8401-466d-b4c4-19eb5547b43a&buttonId=910a4518-3e8b-417b-834a-da13e5075db1&culture=en&uiCulture=en']")).click();
+							driver.findElement(By.name("ReservationCount")).click();
+							driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
+							driver.findElement(By.className("mdc-button__ripple")).click();
+							driver.findElement(By.className("date-text")).click();
+							driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
 	                    	label = "7:30 PM " + slot;
 	                    	path = "//a[contains(@aria-label, \"" + label + "\") ]";                        	
 	                    	driver.findElement(By.xpath(path)).click();
-	                        driver.findElement(By.name("ReservationCount")).click();
-	                    	driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE,"2");
-	                    	driver.findElement(By.className("mdc-button__ripple")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).click();
 	                    	driver.findElement(By.name("PhoneNumber")).sendKeys("6138081681");
 	                    	driver.findElement(By.name("Email")).click();
