@@ -43,10 +43,10 @@ const parsePages = async () => {
                                 const $td = $schedule(tr).find('td');
                                 bookingDivs.each((index, bookingDiv) => {
                                     const bookingText = $booking(bookingDiv).text().trim();
-                                    if(activity.replace(/[^a-zA-Z\s]/g, '') === bookingText.replace(/[^a-zA-Z\s]/g, '')) {
+                                    if (activity.replace(/[^a-zA-Z\s]/g, '') === bookingText.replace(/[^a-zA-Z\s]/g, '')) {
                                         rowData["link"] = $booking(bookingDiv).parent().attr('href')
                                     }
-                                });                                
+                                });
                                 $td.each((index, td) => {
                                     const day = daysOfWeek[index];
                                     let cellText = $schedule(td).text().replace(/[\n\t]/g, '').trim();
@@ -58,7 +58,7 @@ const parsePages = async () => {
                                             return slot.replace(/\b(?!(?:30\b))(\d+)\b(?!(?::|30\b))/g, '$1:00');
                                         });
                                         rowData[day] = adjustedTimeSlots2;
-                                    }                                    
+                                    }
                                 });
                                 tableData.table[activity] = rowData;
                             }
@@ -73,7 +73,7 @@ const parsePages = async () => {
     }
 
     const jsonData = JSON.stringify(tablesData, null, 2);
-    fs.writeFile('data.json', jsonData, (err) => {});
+    fs.writeFile('data.json', jsonData, (err) => { });
 };
 
 parsePages();
