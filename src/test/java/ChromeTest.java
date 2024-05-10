@@ -189,8 +189,7 @@ class ChromeTest {
 				String parts[] = time.split(":");
 
 				try {
-					if (true) {
-						// if(parts[0].equals("18") && parts[1].equals("00") && parts[2].equals("01")) {
+					if(parts[0].equals("18") && parts[1].equals("00") && parts[2].equals("01")) {
 						LocalDate currentDate = LocalDate.now();
 						DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("EEE");
 						String day = currentDate.format(dayFormat).replace(".", "");
