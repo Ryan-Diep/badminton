@@ -121,30 +121,9 @@ public class Runner {
             timeIndex = in.nextInt() - 1;
             in.nextLine();
             if (!(timeIndex < 0 || timeIndex >= index)) {
-                System.out.println("control");
                 test.setTime(formatTime(dayData.get("time").get(timeIndex).asText()));
-                System.out.println("set time");
                 test.setLink(dayData.get("link").asText());
-                System.out.println("set link");
                 choosingTime = false;
-            // try {
-            //     System.out.print("Selection: ");
-            //     timeIndex = in.nextInt() - 1;
-            //     in.nextLine();
-            //     if (!(timeIndex < 0 || timeIndex >= index)) {
-            //         System.out.println("control");
-            //         test.setTime(formatTime(jsonData.get(locationIndex).get("table").get(futureDay).get("time").get(timeIndex).asText()));
-            //         System.out.println("set time");
-            //         test.setLink(jsonData.get(locationIndex).get("table").get(futureDay).get("link").asText());
-            //         System.out.println("set link");
-            //         choosingTime = false;
-            //     }
-            //     else {
-            //         throw new Exception();
-            //     }
-            // }
-            // catch (Exception e) {
-            //     System.out.println("Invalid input, try again");
             }
             
             System.out.println("---------------------------------------------------\n");
