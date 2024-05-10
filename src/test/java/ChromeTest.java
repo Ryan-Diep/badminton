@@ -43,7 +43,7 @@ class ChromeTest {
 	}
 
 	@Test
-	void test() {
+	void test() throws InterruptedException {
 		driver.get(sutUrl);
 
 		while (flag) {
@@ -51,9 +51,12 @@ class ChromeTest {
 			DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
 			String time = currentTime.format(timeFormat);
 			String parts[] = time.split(":");
-
+			int sleepInterval = 1000;
 			try {
-				if(parts[0].equals("18") && parts[1].equals("00") && parts[2].equals("01")) {
+				if(parts[0].equals("17") && parts[1].equals("58") && parts[2].equals("00")) {
+					sleepInterval = 0;
+				}
+				else if(parts[0].equals("18") && parts[1].equals("00") && parts[2].equals("01")) {
 					LocalDate currentDate = LocalDate.now();
 					LocalDate futureDate = currentDate.plus(2, ChronoUnit.DAYS);
 					DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEEE MMMM d, yyyy");
@@ -75,13 +78,18 @@ class ChromeTest {
 					driver.findElement(By.name("field2021")).click();
 					driver.findElement(By.name("field2021")).sendKeys(name);
 					driver.findElement(By.className("mdc-button__ripple")).click();
+					System.out.println("Browser Will Close in 5 Minutes");
+					Thread.sleep(300000);
+					flag = false;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				driver.quit();
 				flag = false;
 			}
+			Thread.sleep(sleepInterval);
 		}
+		driver.quit();
 	}
 
 	public void setPhone(String phone) {

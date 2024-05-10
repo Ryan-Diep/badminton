@@ -14,7 +14,7 @@ public class Runner {
     public static Scanner in = new Scanner(System.in);
     public static String phone, name, email;
     public static int index, locationIndex, timeIndex;
-    public static void main(String[] args) throws JsonProcessingException, IOException {
+    public static void main(String[] args) throws JsonProcessingException, IOException, InterruptedException {
         ChromeTest test = new ChromeTest();
         String webScraperPath = new File("src/main/resources/data.json").getAbsolutePath();
 
@@ -58,8 +58,8 @@ public class Runner {
         System.out.print("Enter Email Address: ");
         test.setEmail(in.nextLine());
         System.out.print("Enter Name: ");
-        test.setEmail(in.nextLine());
-        System.out.println("--------------------------------------------------\n-");
+        test.setName(in.nextLine());
+        System.out.println("---------------------------------------------------\n");
 
         boolean choosingLocation = true;
         while (choosingLocation) {
@@ -74,7 +74,6 @@ public class Runner {
             try {
                 System.out.print("Selection: ");
                 locationIndex = in.nextInt() - 1;
-                in.nextLine();
                 if (!(locationIndex < 0 || locationIndex >= index)) {
                     test.setUrl(jsonData.get(locationIndex).get("href").asText());
                     choosingLocation = false;
@@ -86,8 +85,8 @@ public class Runner {
             catch (Exception e) {
                 System.out.println("Invalid input, try again");
             }
+            in.nextLine();
             System.out.println("---------------------------------------------------\n");
-            choosingLocation = false;
         }
 
         boolean choosingTime = true;
@@ -117,14 +116,22 @@ public class Runner {
                 System.out.println(" " + index + ". " + time.asText());
                 index++;
             });
-            System.out.print("Selection: ");
-            timeIndex = in.nextInt() - 1;
-            in.nextLine();
-            if (!(timeIndex < 0 || timeIndex >= index)) {
-                test.setTime(formatTime(dayData.get("time").get(timeIndex).asText()));
-                test.setLink(dayData.get("link").asText());
-                choosingTime = false;
+            try {
+                System.out.print("Selection: ");
+                timeIndex = in.nextInt() - 1;
+                if (!(timeIndex < 0 || timeIndex >= index)) {
+                    test.setTime(formatTime(dayData.get("time").get(timeIndex).asText()));
+                    test.setLink(dayData.get("link").asText());
+                    choosingTime = false;
+                }
+                else {
+                    throw new Exception();
+                }
             }
+            catch (Exception e) {
+                System.out.println("Invalid input, try again");
+            }
+            in.nextLine();
             
             System.out.println("---------------------------------------------------\n");
         }
