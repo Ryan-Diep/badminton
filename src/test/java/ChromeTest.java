@@ -22,8 +22,6 @@ class ChromeTest {
 
 	static final Logger log = getLogger(lookup().lookupClass());
 	String label, path, phone, email, name, sutUrl, link, timeSlot;
-	String monLink, tueLink, wedLink, thuLink, friLink, satLink, sunLink;
-	String monTime, tueTime, wedTime, thuTime, friTime, satTime, sunTime;
 	boolean flag = true;
 	int index;
 
