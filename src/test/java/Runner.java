@@ -113,6 +113,12 @@ public class Runner {
                 System.out.println(" " + index + ". " + time.asText());
                 index++;
             });
+
+            if (index == 0) {
+                System.out.println("No available times");
+                System.exit(0);
+            }
+
             try {
                 System.out.print("Selection: ");
                 timeIndex = in.nextInt() - 1;
