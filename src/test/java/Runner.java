@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -14,9 +15,10 @@ public class Runner {
     public static Scanner in = new Scanner(System.in);
     public static String phone, name, email;
     public static int index, locationIndex, timeIndex;
+
     public static void main(String[] args) throws JsonProcessingException, IOException, InterruptedException {
         ChromeTest test = new ChromeTest();
-        String webScraperPath = new File("src/main/resources/data.json").getAbsolutePath();
+        String webScraperPath = new File("src/main/resources/webScraper.js").getAbsolutePath();
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("node", webScraperPath);
@@ -29,17 +31,17 @@ public class Runner {
             e.printStackTrace();
         }
 
-        String jsonFilePath = new File("src/main/resources/data.json").getAbsolutePath();
+        String jsonFilePath = new File("data.json").getAbsolutePath();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonData = objectMapper.readTree(new File(jsonFilePath));
 
-		for (JsonNode court : jsonData) {
+        for (JsonNode court : jsonData) {
             String location = court.get("courtName").asText();
             System.out.println("---------------------------------------------------");
             System.out.println("Location: " + location);
             System.out.println("Times:");
 
-            JsonNode table = court.get("table");
+            JsonNode table = court.get("table").get(0);
             table.forEach(day -> {
                 day.fields().forEachRemaining(entry -> {
                     System.out.println(" " + entry.getKey() + ":");
@@ -49,7 +51,6 @@ public class Runner {
                     });
                 });
             });
-            System.out.println("---------------------------------------------------\n");
         }
 
         System.out.println("---------------------------------------------------");
@@ -59,7 +60,6 @@ public class Runner {
         test.setEmail(in.nextLine());
         System.out.print("Enter Name: ");
         test.setName(in.nextLine());
-        System.out.println("---------------------------------------------------\n");
 
         boolean choosingLocation = true;
         while (choosingLocation) {
@@ -77,16 +77,13 @@ public class Runner {
                 if (!(locationIndex < 0 || locationIndex >= index)) {
                     test.setUrl(jsonData.get(locationIndex).get("href").asText());
                     choosingLocation = false;
-                }
-                else {
+                } else {
                     throw new Exception();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Invalid input, try again");
             }
             in.nextLine();
-            System.out.println("---------------------------------------------------\n");
         }
 
         boolean choosingTime = true;
@@ -100,7 +97,7 @@ public class Runner {
             System.out.println("Booking for " + futureDay);
             System.out.println("Choose the Time to Book: ");
             JsonNode courtData = jsonData.get(locationIndex);
-            JsonNode tableData = courtData.get("table");
+            JsonNode tableData = courtData.get("table").get(0);
             JsonNode dayData = null;
 
             Iterator<JsonNode> iterator = tableData.iterator();
@@ -120,38 +117,48 @@ public class Runner {
                 System.out.print("Selection: ");
                 timeIndex = in.nextInt() - 1;
                 if (!(timeIndex < 0 || timeIndex >= index)) {
-                    test.setTime(formatTime(dayData.get("time").get(timeIndex).asText()));
+                    ArrayList<String> timeslots = new ArrayList<>();
+
+                    dayData.get("time").forEach(time -> {
+                        String timeSlot = time.asText();
+                        timeslots.add(formatTime(timeSlot));
+                        System.out.println(" " + index + ". " + timeSlot);
+                        index++;
+                    });
+
+                    String selectedTime = timeslots.remove(timeIndex);
+                    timeslots.add(formatTime(selectedTime));
+
+                    test.setTimeSlots(timeslots);
                     test.setLink(dayData.get("link").asText());
                     choosingTime = false;
-                }
-                else {
+                } else {
                     throw new Exception();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Invalid input, try again");
             }
             in.nextLine();
-            
-            System.out.println("---------------------------------------------------\n");
-        }
 
+        }
+        System.out.println("---------------------------------------------------\n");
         in.close();
         test.setupClass();
         test.setup();
         test.test();
         test.teardown();
     }
-    private static String formatTime(String time) {
-		String[] parts = time.split(":");
-		String hour = parts[0];
-		String minutes = parts[1].substring(0, 2);
-		String period = time.substring(time.length() - 2);
-		if (hour.equals("10") && minutes.equals("30")) {
-			period = "am";
-		}
-		String formattedTime = hour + ":" + minutes + " " + period;
 
-		return formattedTime;
-	}
+    private static String formatTime(String time) {
+        String[] parts = time.split(":");
+        String hour = parts[0];
+        String minutes = parts[1].substring(0, 2);
+        String period = time.substring(time.length() - 2);
+        if (hour.equals("10") && minutes.equals("30")) {
+            period = "am";
+        }
+        String formattedTime = hour + ":" + minutes + " " + period;
+
+        return formattedTime;
+    }
 }

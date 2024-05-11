@@ -1,6 +1,7 @@
 const fs = require('fs');
 const cheerio = require('cheerio');
 const fetch = require('node-fetch');
+const path = require('path');
 
 const tablesData = [];
 
@@ -31,7 +32,8 @@ const parsePages = async () => {
             scheduleTables.each((index, scheduleTable) => {
                 const caption = $schedule(scheduleTable).find('caption').text();
                 if (caption.toLowerCase().includes('racquet')) {
-                    const tableData = { courtName: court, href: badmintonCourts[court].booking, table: [] }; // Initialize tableData.table as an array
+                    const tableData = { courtName: court, href: badmintonCourts[court].booking, table: [] };
+                    const rowDataArray = [{}, {}, {}, {}, {}, {}, {}];
                     const $tbody = $schedule(scheduleTable).find('tbody');
                     const $tr = $tbody.find('tr');
                     $tr.each((index, tr) => {
@@ -58,18 +60,21 @@ const parsePages = async () => {
                                         const adjustedTimeSlots2 = adjustedTimeSlots1.map(slot => {
                                             return slot.replace(/\b(?!(?:30\b))(\d+)\b(?!(?::|30\b))/g, '$1:00');
                                         });
+                                        const adjustedTimeSlots3 = adjustedTimeSlots2.map(slot => slot.replace(/\bam\b/g, 'AM').replace(/\bpm\b/g, 'PM'));
                                         if (!rowData[day]) {
                                             rowData[day] = {};
                                         }
                                         rowData[day]["link"] = link;
-                                        rowData[day]["time"] = adjustedTimeSlots2;
+                                        rowData[day]["time"] = adjustedTimeSlots3;
+                                        rowDataArray[index][day] = rowData[day];
                                     }
                                 });
-                                
-                                tableData.table.push(rowData);
                             }
                         });
                     });
+                    const filteredRowDataArray = rowDataArray.filter(dayData => Object.keys(dayData).length !== 0);
+                    
+                    tableData.table.push(filteredRowDataArray);
                     tablesData.push(tableData);
                 }
             });            
@@ -79,7 +84,8 @@ const parsePages = async () => {
     }
 
     const jsonData = JSON.stringify(tablesData, null, 2);
-    fs.writeFile('data.json', jsonData, (err) => { });
+    const filePath = path.join(__dirname, '..', '..', '..', 'data.json');
+    fs.writeFile(filePath, jsonData, (err) => { });
 };
 
 parsePages();
