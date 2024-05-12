@@ -90,13 +90,8 @@ class ChromeTest {
 					driver.findElement(By.name("Email")).sendKeys(email);
 					driver.findElement(By.name("field2021")).click();
 					driver.findElement(By.name("field2021")).sendKeys(name);
-					for (int j = 0; j < 5; j++) {
-						try {
-							driver.findElement(By.className("mdc-button__ripple")).click();
-							Thread.sleep(200);
-						}
-						catch (Exception e) {}
-					}
+					driver.findElement(By.className("mdc-button__ripple")).click();
+					
 					System.out.println("Browser Will Close in 5 Minutes");
 					Thread.sleep(300000);
 					flag = false;
