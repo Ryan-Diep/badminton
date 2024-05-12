@@ -74,7 +74,6 @@ class ChromeTest {
 					while (looping) {
 						try {
 							label = timeSlots.get(i) + " " + bookingDate;
-							System.out.println(label);
 							path = "//a[contains(@aria-label, \"" + label + "\") ]";
 							driver.findElement(By.xpath(path)).click();
 							looping = false;
@@ -91,7 +90,7 @@ class ChromeTest {
 					driver.findElement(By.name("Email")).sendKeys(email);
 					driver.findElement(By.name("field2021")).click();
 					driver.findElement(By.name("field2021")).sendKeys(name);
-					for (int j = 0; i < 5; i++) {
+					for (int j = 0; j < 5; j++) {
 						try {
 							driver.findElement(By.className("mdc-button__ripple")).click();
 							Thread.sleep(200);
