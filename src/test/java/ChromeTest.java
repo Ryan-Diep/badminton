@@ -21,112 +21,111 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 class ChromeTest {
 
-	static final Logger log = getLogger(lookup().lookupClass());
-	String label, path, phone, email, name, sutUrl, link;
-	boolean flag = true;
-	int index;
-	private ArrayList<String> timeSlots;
+    static final Logger log = getLogger(lookup().lookupClass());
+    String label, path, phone, email, name, sutUrl, link;
+    boolean flag = true;
+    private ArrayList<String> timeSlots;
 
-	WebDriver driver;
+    WebDriver driver;
 
-	@BeforeAll
-	static void setupClass() {
-		WebDriverManager.chromedriver().setup();
-	}
+    @BeforeAll
+    static void setupClass() {
+        WebDriverManager.chromedriver().driverVersion("124.0.6367.0").setup(); // Specify ChromeDriver version
+    }
 
-	@BeforeEach
-	void setup() {
-		driver = new ChromeDriver();
-	}
+    @BeforeEach
+    void setup() {
+        driver = new ChromeDriver();
+    }
 
-	@AfterEach
-	void teardown() {
-		driver.quit();
-	}
+    @AfterEach
+    void teardown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 
-	@Test
-	void test() throws InterruptedException {
-		driver.get(sutUrl);
-		while (flag) {
-			LocalTime currentTime = LocalTime.now();
-			DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
-			String time = currentTime.format(timeFormat);
-			String parts[] = time.split(":");
-			int sleepInterval = 1000;
-			try {
-				if (parts[0].equals("17") && parts[1].equals("58") && parts[2].equals("00")) {
-					sleepInterval = 0;
-				} else if (parts[0].equals("18") && parts[1].equals("00") && parts[2].equals("01")) {
-					LocalDate currentDate = LocalDate.now();
-					LocalDate futureDate = currentDate.plus(2, ChronoUnit.DAYS);
-					DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEEE MMMM d, yyyy");
-					String bookingDate = futureDate.format(dateFormat);
+    @Test
+    void test() throws InterruptedException {
+        driver.get(sutUrl);
+        while (flag) {
+            LocalTime currentTime = LocalTime.now();
+            DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+            String time = currentTime.format(timeFormat);
+            String[] parts = time.split(":");
+            int sleepInterval = 1000;
+            try {
+                if (parts[0].equals("17") && parts[1].equals("58") && parts[2].equals("00")) {
+                    sleepInterval = 0;
+                } else if (parts[0].equals("18") && parts[1].equals("00") && parts[2].equals("01")) {
+                    LocalDate currentDate = LocalDate.now();
+                    LocalDate futureDate = currentDate.plus(2, ChronoUnit.DAYS);
+                    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEEE MMMM d, yyyy");
+                    String bookingDate = futureDate.format(dateFormat);
 
-					driver.findElement(By.xpath("//a[@href='" + link + "']")).click();
-					driver.findElement(By.name("ReservationCount")).click();
-					driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE, "2");
-					driver.findElement(By.className("mdc-button__ripple")).click();
-					driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a"))
-							.click();
+                    driver.findElement(By.xpath("//a[@href='" + link + "']")).click();
+                    driver.findElement(By.name("ReservationCount")).click();
+                    driver.findElement(By.name("ReservationCount")).sendKeys(Keys.BACK_SPACE, "2");
+                    driver.findElement(By.className("mdc-button__ripple")).click();
+                    driver.findElement(By.xpath("//span[text()='" + bookingDate + "']/ancestor::a")).click();
 
-					int i = timeSlots.size() - 1;
-					boolean looping = true;
-					while (looping) {
-						try {
-							label = timeSlots.get(i) + " " + bookingDate;
-							path = "//a[contains(@aria-label, \"" + label + "\") ]";
-							driver.findElement(By.xpath(path)).click();
-							looping = false;
-						} catch (Exception e) {
-							if (i-- < 0) {
-								looping = false;
-							}
-						}
-					}
+                    int i = timeSlots.size() - 1;
+                    boolean looping = true;
+                    while (looping) {
+                        try {
+                            label = timeSlots.get(i) + " " + bookingDate;
+                            path = "//a[contains(@aria-label, \"" + label + "\") ]";
+                            driver.findElement(By.xpath(path)).click();
+                            looping = false;
+                        } catch (Exception e) {
+                            if (i-- < 0) {
+                                looping = false;
+                            }
+                        }
+                    }
 
-					driver.findElement(By.name("PhoneNumber")).click();
-					driver.findElement(By.name("PhoneNumber")).sendKeys(phone);
-					driver.findElement(By.name("Email")).click();
-					driver.findElement(By.name("Email")).sendKeys(email);
-					driver.findElement(By.name("field2021")).click();
-					driver.findElement(By.name("field2021")).sendKeys(name);
-					driver.findElement(By.className("mdc-button__ripple")).click();
-					
-					System.out.println("Browser Will Close in 5 Minutes");
-					Thread.sleep(300000);
-					flag = false;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				driver.quit();
-				flag = false;
-			}
-			Thread.sleep(sleepInterval);
-		}
-		driver.quit();
-	}
+                    driver.findElement(By.name("PhoneNumber")).click();
+                    driver.findElement(By.name("PhoneNumber")).sendKeys(phone);
+                    driver.findElement(By.name("Email")).click();
+                    driver.findElement(By.name("Email")).sendKeys(email);
+                    driver.findElement(By.name("field2021")).click();
+                    driver.findElement(By.name("field2021")).sendKeys(name);
+                    driver.findElement(By.className("mdc-button__ripple")).click();
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+                    System.out.println("Browser Will Close in 5 Minutes");
+                    Thread.sleep(300000);
+                    flag = false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                flag = false;
+            }
+            Thread.sleep(sleepInterval);
+        }
+        driver.quit();
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setUrl(String sutUrl) {
-		this.sutUrl = sutUrl;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setLink(String link) {
-		this.link = link;
-	}
+    public void setUrl(String sutUrl) {
+        this.sutUrl = sutUrl;
+    }
 
-	public void setTimeSlots(ArrayList<String> timeSlots) {
-		this.timeSlots = timeSlots;
-	}
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setTimeSlots(ArrayList<String> timeSlots) {
+        this.timeSlots = timeSlots;
+    }
 }

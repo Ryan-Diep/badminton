@@ -7,16 +7,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Runner {
     public static Scanner in = new Scanner(System.in);
     public static String phone, name, email;
-    public static int index, locationIndex, timeIndex;
+    public static int locationIndex, timeIndex;
 
-    public static void main(String[] args) throws JsonProcessingException, IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         ChromeTest test = new ChromeTest();
         String webScraperPath = new File("src/main/resources/webScraper.js").getAbsolutePath();
 
@@ -25,7 +24,6 @@ public class Runner {
             Process process = processBuilder.start();
 
             int exitCode = process.waitFor();
-
             System.out.println("webScraper.js script exited with code: " + exitCode);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -64,7 +62,7 @@ public class Runner {
         boolean choosingLocation = true;
         while (choosingLocation) {
             System.out.println("---------------------------------------------------");
-            index = 1;
+            int index = 1;
             System.out.println("Choose the Location to Book: ");
             for (JsonNode court : jsonData) {
                 String location = court.get("courtName").asText();
@@ -73,23 +71,22 @@ public class Runner {
             }
             try {
                 System.out.print("Selection: ");
-                locationIndex = in.nextInt() - 1;
-                if (!(locationIndex < 0 || locationIndex >= index)) {
+                locationIndex = Integer.parseInt(in.nextLine()) - 1;
+                if (locationIndex >= 0 && locationIndex < index - 1) {
                     test.setUrl(jsonData.get(locationIndex).get("href").asText());
                     choosingLocation = false;
                 } else {
-                    throw new Exception();
+                    System.out.println("Invalid input, try again");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input, try again");
             }
-            in.nextLine();
         }
 
         boolean choosingTime = true;
         while (choosingTime) {
             System.out.println("---------------------------------------------------");
-            index = 1;
+            int index = 1;
             LocalDate currentDate = LocalDate.now();
             DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("EEE");
             LocalDate futureDate = currentDate.plus(2, ChronoUnit.DAYS);
@@ -109,29 +106,23 @@ public class Runner {
                 }
             }
 
-            dayData.get("time").forEach(time -> {
-                System.out.println(" " + index + ". " + time.asText());
+            ArrayList<String> timeslots = new ArrayList<>();
+            for (JsonNode timeNode : dayData.get("time")) {
+                String timeSlot = timeNode.asText();
+                timeslots.add(formatTime(timeSlot));
+                System.out.println(" " + index + ". " + timeSlot);
                 index++;
-            });
+            }
 
-            if (index == 0) {
+            if (index == 1) {
                 System.out.println("No available times");
                 System.exit(0);
             }
 
             try {
                 System.out.print("Selection: ");
-                timeIndex = in.nextInt() - 1;
-                if (!(timeIndex < 0 || timeIndex >= index)) {
-                    ArrayList<String> timeslots = new ArrayList<>();
-
-                    dayData.get("time").forEach(time -> {
-                        String timeSlot = time.asText();
-                        timeslots.add(formatTime(timeSlot));
-                        System.out.println(" " + index + ". " + timeSlot);
-                        index++;
-                    });
-
+                timeIndex = Integer.parseInt(in.nextLine()) - 1;
+                if (timeIndex >= 0 && timeIndex < index - 1) {
                     String selectedTime = timeslots.remove(timeIndex);
                     timeslots.add(formatTime(selectedTime));
 
@@ -139,17 +130,15 @@ public class Runner {
                     test.setLink(dayData.get("link").asText());
                     choosingTime = false;
                 } else {
-                    throw new Exception();
+                    System.out.println("Invalid input, try again");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input, try again");
             }
-            in.nextLine();
-
         }
+
         System.out.println("---------------------------------------------------\n");
         in.close();
-        test.setupClass();
         test.setup();
         test.test();
         test.teardown();
@@ -163,8 +152,6 @@ public class Runner {
         if (hour.equals("10") && minutes.equals("30")) {
             period = "am";
         }
-        String formattedTime = hour + ":" + minutes + " " + period;
-
-        return formattedTime;
+        return hour + ":" + minutes + " " + period;
     }
 }
